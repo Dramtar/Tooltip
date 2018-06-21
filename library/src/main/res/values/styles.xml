@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="animation_out_down">
+        <item name="android:windowEnterAnimation">@anim/slide_out_down</item>
+    </style>
+
+    <style name="animation_out_up">
+        <item name="android:windowEnterAnimation">@anim/slide_out_up</item>
+    </style>
+</resources>

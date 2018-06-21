@@ -29,7 +29,9 @@ import android.graphics.RectF;
 import android.os.Build;
 import android.view.Gravity;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
+import android.widget.FrameLayout;
 
 /**
  * Tooltip utils
@@ -78,5 +80,13 @@ final class Util {
             //noinspection deprecation
             view.getViewTreeObserver().removeGlobalOnLayoutListener(listener);
         }
+    }
+
+    public static ViewGroup findFrameLayout(View anchorView) {
+        ViewGroup rootView = (ViewGroup) anchorView.getRootView();
+        if (rootView.getChildCount() == 1 && rootView.getChildAt(0) instanceof FrameLayout) {
+            rootView = (ViewGroup) rootView.getChildAt(0);
+        }
+        return rootView;
     }
 }
