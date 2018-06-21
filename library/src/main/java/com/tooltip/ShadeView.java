@@ -67,8 +67,8 @@ public class ShadeView extends View {
         paint.setColor(Color.TRANSPARENT);
         paint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.SRC_OUT));
 
-        RectF anchorRecr = Util.calculateRectInWindow(mAnchorView);
-        RectF overlayRecr = Util.calculateRectInWindow(this);
+        RectF anchorRecr = Utils.calculateRectInWindow(mAnchorView);
+        RectF overlayRecr = Utils.calculateRectInWindow(this);
 
         float left = anchorRecr.left - overlayRecr.left;
         float top = anchorRecr.top - overlayRecr.top;
