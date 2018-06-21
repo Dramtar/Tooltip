@@ -78,6 +78,9 @@ public final class Tooltip {
     private LinearLayout mContentView;
     private ImageView mArrowView;
 
+    private View mShade;
+    private ViewGroup mRootView;
+
     private Tooltip(Builder builder) {
         isDismissOnClick = builder.isDismissOnClick;
 
@@ -88,6 +91,8 @@ public final class Tooltip {
         mOnLongClickListener = builder.mOnLongClickListener;
         mOnDismissListener = builder.mOnDismissListener;
 
+        mRootView = Utils.findFrameLayout(mAnchorView);
+
         mPopupWindow = new PopupWindow(builder.mContext);
         mPopupWindow.setClippingEnabled(false);
         mPopupWindow.setWidth(ViewGroup.LayoutParams.WRAP_CONTENT);
@@ -95,6 +100,20 @@ public final class Tooltip {
         mPopupWindow.setContentView(getContentView(builder));
         mPopupWindow.setBackgroundDrawable(new ColorDrawable());
         mPopupWindow.setOutsideTouchable(builder.isCancelable);
+
+        if (builder.isAnimated) {
+            switch (mGravity) {
+                case Gravity.TOP:
+                    mPopupWindow.setAnimationStyle(R.style.animation_out_up);
+                    break;
+                case Gravity.BOTTOM:
+                    mPopupWindow.setAnimationStyle(R.style.animation_out_down);
+                    break;
+                default:
+                    mPopupWindow.setAnimationStyle(R.style.animation_out_down);
+            }
+        }
+
         mPopupWindow.setOnDismissListener(new PopupWindow.OnDismissListener() {
             @Override
             public void onDismiss() {
@@ -104,6 +123,12 @@ public final class Tooltip {
                 if (mOnDismissListener != null) {
                     mOnDismissListener.onDismiss();
                 }
+
+                if (mRootView != null && mShade != null) {
+                    mRootView.removeView(mShade);
+                }
+                mRootView = null;
+                mShade = null;
             }
         });
     }
@@ -187,6 +212,10 @@ public final class Tooltip {
         mContentView.setOnClickListener(mClickListener);
         mContentView.setOnLongClickListener(mLongClickListener);
 
+        if (builder.isShaded) {
+            createShade(builder);
+        }
+
         return mContentView;
     }
 
@@ -220,6 +249,12 @@ public final class Tooltip {
                 }
             });
         }
+    }
+
+    private void createShade(Builder builder) {
+        mShade = new ShadeView(builder.mContext, mAnchorView, builder.mShapeShade, builder.mShadeOffset);
+        mShade.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
+        mRootView.addView(mShade);
     }
 
     /**
@@ -389,12 +424,15 @@ public final class Tooltip {
     public static final class Builder {
         private boolean isDismissOnClick;
         private boolean isCancelable;
+        private boolean isAnimated;
+        private boolean isShaded;
         private boolean isArrowEnabled;
 
         private int mBackgroundColor;
         private int mGravity;
         private int mTextAppearance;
         private int mTextStyle;
+        private int mShapeShade = 0;
         private int mPadding;
         private int mMaxWidth;
         private int mDrawablePadding;
@@ -406,6 +444,7 @@ public final class Tooltip {
         private float mTextSize;
         private float mLineSpacingExtra;
         private float mLineSpacingMultiplier = 1f;
+        private float mShadeOffset = 5f;
 
         private Drawable mDrawableBottom;
         private Drawable mDrawableEnd;
@@ -507,6 +546,16 @@ public final class Tooltip {
             return this;
         }
 
+        public Builder setAnimated(boolean isAnimated) {
+            this.isAnimated = isAnimated;
+            return this;
+        }
+
+        public Builder setShaded(boolean isShaded) {
+            this.isShaded = isShaded;
+            return this;
+        }
+
         /**
          * Sets whether {@link Tooltip} is arrow enabled. Default is {@code true}
          *
@@ -534,6 +583,16 @@ public final class Tooltip {
          */
         public Builder setCornerRadius(@DimenRes int resId) {
             return setCornerRadius(mContext.getResources().getDimension(resId));
+        }
+
+        public Builder setShapeShade(int shapeShade) {
+            mShapeShade = shapeShade;
+            return this;
+        }
+
+        public Builder setShadeOffset(float shadeOffset) {
+            mShadeOffset = shadeOffset;
+            return this;
         }
 
         /**
