@@ -38,6 +38,7 @@ import android.support.annotation.ColorInt;
 import android.support.annotation.DimenRes;
 import android.support.annotation.DrawableRes;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.annotation.StringRes;
 import android.support.annotation.StyleRes;
 import android.support.v4.content.res.ResourcesCompat;
@@ -80,6 +81,7 @@ public final class Tooltip {
 
     private View mShade;
     private ViewGroup mRootView;
+    private TextView mTextView;
 
     private Tooltip(Builder builder) {
         isDismissOnClick = builder.isDismissOnClick;
@@ -132,40 +134,48 @@ public final class Tooltip {
             }
         });
     }
+    public void setText(int resId){
+        mTextView.setText(resId);
+    }
+
+    @Nullable
+    public void setText(String text){
+        mTextView.setText(text);
+    }
 
     private View getContentView(Builder builder) {
-        TextView textView = new TextView(builder.mContext);
+        mTextView = new TextView(builder.mContext);
 
-        TextViewCompat.setTextAppearance(textView, builder.mTextAppearance);
-        TextViewCompat.setCompoundDrawablesRelativeWithIntrinsicBounds(textView, builder.mDrawableStart, builder.mDrawableTop, builder.mDrawableEnd, builder.mDrawableBottom);
+        TextViewCompat.setTextAppearance(mTextView, builder.mTextAppearance);
+        TextViewCompat.setCompoundDrawablesRelativeWithIntrinsicBounds(mTextView, builder.mDrawableStart, builder.mDrawableTop, builder.mDrawableEnd, builder.mDrawableBottom);
 
-        textView.setText(builder.mText);
-        textView.setPadding(builder.mPadding, builder.mPadding, builder.mPadding, builder.mPadding);
-        textView.setLineSpacing(builder.mLineSpacingExtra, builder.mLineSpacingMultiplier);
-        textView.setTypeface(builder.mTypeface, builder.mTextStyle);
-        textView.setCompoundDrawablePadding(builder.mDrawablePadding);
+        mTextView.setText(builder.mText);
+        mTextView.setPadding(builder.mPadding, builder.mPadding, builder.mPadding, builder.mPadding);
+        mTextView.setLineSpacing(builder.mLineSpacingExtra, builder.mLineSpacingMultiplier);
+        mTextView.setTypeface(builder.mTypeface, builder.mTextStyle);
+        mTextView.setCompoundDrawablePadding(builder.mDrawablePadding);
 
         if (builder.mMaxWidth >= 0) {
-            textView.setMaxWidth(builder.mMaxWidth);
+            mTextView.setMaxWidth(builder.mMaxWidth);
         }
 
         if (builder.mTextSize >= 0) {
-            textView.setTextSize(TypedValue.TYPE_NULL, builder.mTextSize);
+            mTextView.setTextSize(TypedValue.TYPE_NULL, builder.mTextSize);
         }
 
         if (builder.mTextColor != null) {
-            textView.setTextColor(builder.mTextColor);
+            mTextView.setTextColor(builder.mTextColor);
         }
 
         LinearLayout.LayoutParams textViewParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT, 0);
         textViewParams.gravity = Gravity.CENTER;
-        textView.setLayoutParams(textViewParams);
+        mTextView.setLayoutParams(textViewParams);
 
         GradientDrawable drawable = new GradientDrawable();
         drawable.setColor(builder.mBackgroundColor);
         drawable.setCornerRadius(builder.mCornerRadius);
 
-        ViewCompat.setBackground(textView, drawable);
+        ViewCompat.setBackground(mTextView, drawable);
 
         mContentView = new LinearLayout(builder.mContext);
         mContentView.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
@@ -185,14 +195,14 @@ public final class Tooltip {
             mArrowView.setLayoutParams(arrowLayoutParams);
 
             if (mGravity == Gravity.TOP || mGravity == Gravity.getAbsoluteGravity(Gravity.START, ViewCompat.getLayoutDirection(mAnchorView))) {
-                mContentView.addView(textView);
+                mContentView.addView(mTextView);
                 mContentView.addView(mArrowView);
             } else {
                 mContentView.addView(mArrowView);
-                mContentView.addView(textView);
+                mContentView.addView(mTextView);
             }
         } else {
-            mContentView.addView(textView);
+            mContentView.addView(mTextView);
         }
 
         int padding = (int) Utils.dpToPx(5);
