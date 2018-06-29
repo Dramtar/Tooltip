@@ -262,7 +262,7 @@ public final class Tooltip {
     }
 
     private void createShade(Builder builder) {
-        mShade = new ShadeView(builder.mContext, mAnchorView, builder.mShapeShade, builder.mShadeOffset);
+        mShade = new ShadeView(builder.mContext, mAnchorView, builder.mShapeShade, builder.mShadeOffset, builder.mLightCorner);
         mShade.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
         mRootView.addView(mShade);
     }
@@ -456,6 +456,8 @@ public final class Tooltip {
         private float mLineSpacingMultiplier = 1f;
         private float mShadeOffset = 5f;
 
+        private Integer mLightCorner;
+
         private Drawable mDrawableBottom;
         private Drawable mDrawableEnd;
         private Drawable mDrawableStart;
@@ -602,6 +604,11 @@ public final class Tooltip {
 
         public Builder setShadeOffset(float shadeOffset) {
             mShadeOffset = shadeOffset;
+            return this;
+        }
+
+        public Builder setLightCorner(Integer lightCorner) {
+            mLightCorner = lightCorner;
             return this;
         }
 

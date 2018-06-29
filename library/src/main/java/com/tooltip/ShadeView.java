@@ -24,12 +24,14 @@ public class ShadeView extends View {
     private boolean isInvalidated = true;
     private final int mHighlightShape;
     private final float mOffset;
+    private Integer mLightCorner;
 
-    ShadeView(Context context, View anchorView, int highlightShape, float offset) {
+    ShadeView(Context context, View anchorView, int highlightShape, float offset, Integer lightCorner) {
         super(context);
         mAnchorView = anchorView;
         mOffset = offset;
         mHighlightShape = highlightShape;
+        mLightCorner = lightCorner;
     }
 
     @Override
@@ -77,6 +79,8 @@ public class ShadeView extends View {
 
         if (mHighlightShape == HIGHLIGHT_SHAPE_RECTANGULAR) {
             osCanvas.drawRect(rect, paint);
+        } else if (mLightCorner != null) {
+            osCanvas.drawRoundRect(rect, mLightCorner, mLightCorner, paint);
         } else {
             osCanvas.drawOval(rect, paint);
         }
