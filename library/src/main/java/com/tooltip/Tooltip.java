@@ -150,7 +150,11 @@ public final class Tooltip {
         TextViewCompat.setCompoundDrawablesRelativeWithIntrinsicBounds(mTextView, builder.mDrawableStart, builder.mDrawableTop, builder.mDrawableEnd, builder.mDrawableBottom);
 
         mTextView.setText(builder.mText);
-        mTextView.setPadding(builder.mPadding, builder.mPadding, builder.mPadding, builder.mPadding);
+        if (builder.isHaveAllSidePadding) {
+            mTextView.setPadding(builder.mPaddingLeft, builder.mPaddingTop, builder.mPaddingRight, builder.mPaddingBottom);
+        } else {
+            mTextView.setPadding(builder.mPadding, builder.mPadding, builder.mPadding, builder.mPadding);
+        }
         mTextView.setLineSpacing(builder.mLineSpacingExtra, builder.mLineSpacingMultiplier);
         mTextView.setTypeface(builder.mTypeface, builder.mTextStyle);
         mTextView.setCompoundDrawablePadding(builder.mDrawablePadding);
@@ -437,6 +441,7 @@ public final class Tooltip {
         private boolean isAnimated;
         private boolean isShaded;
         private boolean isArrowEnabled;
+        private boolean isHaveAllSidePadding;
 
         private int mBackgroundColor;
         private int mGravity;
@@ -444,6 +449,10 @@ public final class Tooltip {
         private int mTextStyle;
         private int mShapeShade = 0;
         private int mPadding;
+        private int mPaddingLeft;
+        private int mPaddingTop;
+        private int mPaddingRight;
+        private int mPaddingBottom;
         private int mMaxWidth;
         private int mDrawablePadding;
 
@@ -705,6 +714,15 @@ public final class Tooltip {
          */
         public Builder setPadding(int padding) {
             mPadding = padding;
+            return this;
+        }
+
+        public Builder setPadding(int paddingLeft, int paddingTop, int paddingRight, int paddingBottom) {
+            mPaddingLeft = paddingLeft;
+            mPaddingTop = paddingTop;
+            mPaddingRight = paddingRight;
+            mPaddingBottom = paddingBottom;
+            isHaveAllSidePadding = true;
             return this;
         }
 
